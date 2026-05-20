@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WR ON · Passo a Passo para as Captações</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red-1: #ff3a3a;
+      --red-2: #cf2e2e;
+      --red-3: #a01a1a;
+      --red-4: #6b0000;
+      --black: #0a0a0a;
+      --ink: #1a1a1a;
+      --bone: #faf7f2;
+      --paper: #f0ece4;
+      --line: #e5e0d6;
+      --muted: #6b6b6b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--black);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .deck { width: 100%; height: 100%; position: relative; }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 56px 72px 100px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .65s cubic-bezier(.2,.8,.2,1), transform .65s cubic-bezier(.2,.8,.2,1);
+      transform: translateY(40px) scale(.98);
+      overflow: hidden;
+    }
+    .slide.active { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+    .slide.exit { opacity: 0; transform: translateY(-30px) scale(1.02); }
+
+    .inner { width: 100%; max-width: 1300px; position: relative; z-index: 5; }
+
+    .bg-noir { background: radial-gradient(ellipse at top right, #1a0606 0%, #0a0a0a 50%, #000 100%); color: #fff; }
+    .bg-blood { background: linear-gradient(135deg, #6b0000 0%, #a01a1a 50%, #cf2e2e 100%); color: #fff; }
+    .bg-paper { background: linear-gradient(180deg, var(--bone) 0%, var(--paper) 100%); }
+    .bg-ivory { background: var(--bone); }
+    .bg-coal { background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #0a0a0a 100%); color: #fff; }
+    .bg-blade { background: linear-gradient(135deg, #cf2e2e 0%, #6b0000 100%); color: #fff; }
+    .bg-onyx { background: #0a0a0a; color: #fff; }
+
+    .grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(207,46,46,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(207,46,46,.06) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+      pointer-events: none; z-index: 1;
+    }
+    .grid-bg.dense { background-size: 30px 30px; }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: .5;
+      pointer-events: none;
+      z-index: 2;
+      animation: float 14s ease-in-out infinite;
+    }
+    .blob.r1 { width: 500px; height: 500px; background: #cf2e2e; top: -150px; right: -150px; }
+    .blob.r2 { width: 380px; height: 380px; background: #6b0000; bottom: -120px; left: -100px; animation-delay: -7s; }
+    .blob.r3 { width: 450px; height: 450px; background: #ff3a3a; top: 40%; left: 50%; animation-delay: -3s; opacity: .25; }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -40px) scale(1.1); }
+      66% { transform: translate(-20px, 30px) scale(.95); }
+    }
+
+    .slide-tag {
+      position: absolute;
+      top: 28px; left: 40px;
+      display: flex; align-items: center; gap: 12px;
+      z-index: 10;
+      font-family: 'Space Grotesk', monospace;
+      font-size: 11px; letter-spacing: 3px;
+      text-transform: uppercase; font-weight: 600;
+    }
+    .slide-tag .num { color: var(--red-1); font-weight: 700; }
+    .slide-tag .label { color: rgba(255,255,255,.5); }
+    .slide-tag .bar { width: 28px; height: 1px; background: var(--red-2); }
+
+    .slide-logo { position: absolute; top: 24px; right: 40px; z-index: 10; }
+    .slide-logo img { height: 22px; opacity: .6; }
+    .bg-noir .slide-logo img, .bg-coal .slide-logo img, .bg-onyx .slide-logo img,
+    .bg-blood .slide-logo img, .bg-blade .slide-logo img { filter: brightness(0) invert(1); }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-family: 'Space Grotesk', monospace;
+      font-size: 11px; letter-spacing: 4px;
+      text-transform: uppercase; font-weight: 600;
+      color: var(--red-1); margin-bottom: 22px;
+    }
+    .eyebrow::before { content: ''; width: 32px; height: 1px; background: var(--red-2); }
+
+    .h-mega { font-size: clamp(60px, 9vw, 160px); font-weight: 900; line-height: .9; letter-spacing: -.04em; }
+    .h-display { font-size: clamp(48px, 6.5vw, 110px); font-weight: 900; line-height: .95; letter-spacing: -.035em; }
+    .h-title { font-size: clamp(36px, 4.6vw, 72px); font-weight: 800; line-height: 1; letter-spacing: -.025em; color: #fff; }
+    .h-sub { font-size: clamp(20px, 2.2vw, 32px); font-weight: 600; line-height: 1.2; letter-spacing: -.015em; }
+
+    .grad-red { background: linear-gradient(135deg, var(--red-1), var(--red-3)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .grad-fade { background: linear-gradient(135deg, #fff 0%, var(--red-1) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .outline-text { -webkit-text-stroke: 2px rgba(255,255,255,.3); color: transparent; }
+    .em-italic { font-style: italic; font-weight: 300; }
+
+    .lead { font-size: clamp(16px, 1.4vw, 22px); line-height: 1.55; max-width: 720px; font-weight: 400; }
+    .bg-noir .lead, .bg-coal .lead, .bg-onyx .lead, .bg-blood .lead, .bg-blade .lead { color: rgba(255,255,255,.75); }
+
+    .statement {
+      font-family: 'Inter', serif;
+      font-size: clamp(22px, 2.2vw, 30px);
+      font-weight: 300; font-style: italic; line-height: 1.45;
+      max-width: 800px; padding-left: 24px;
+      border-left: 4px solid var(--red-2); margin-top: 28px;
+    }
+    .statement strong { font-style: normal; font-weight: 600; color: #fff; }
+    .bg-noir .statement, .bg-coal .statement, .bg-onyx .statement { color: rgba(255,255,255,.85); }
+
+    .hero-wrap { max-width: 1100px; }
+    .hero-meta {
+      display: flex; gap: 28px; margin-bottom: 28px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      font-family: 'Space Grotesk', monospace;
+      font-size: 11px; letter-spacing: 2px;
+      text-transform: uppercase; color: rgba(255,255,255,.5);
+      flex-wrap: wrap;
+    }
+    .hero-meta strong { color: #fff; font-weight: 600; }
+    .hero-logo-row { display: flex; align-items: center; gap: 18px; margin-bottom: 28px; flex-wrap: wrap; }
+    .hero-logo-row img { height: 36px; filter: brightness(0) invert(1); }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--red-1), var(--red-3));
+      color: #fff; border: none; border-radius: 100px;
+      font-size: 14px; font-weight: 600; letter-spacing: .5px;
+      cursor: pointer; transition: all .3s;
+      box-shadow: 0 12px 40px rgba(207,46,46,.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 50px rgba(207,46,46,.55); }
+
+    .stmt-center { text-align: center; max-width: 1200px; margin: 0 auto; }
+    .stmt-center .eyebrow { justify-content: center; }
+    .stmt-center .lead { margin: 22px auto 0; }
+
+    .split-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+    .split-asym { display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; align-items: center; }
+
+    .heat {
+      height: 4px;
+      background: linear-gradient(90deg, var(--red-1), var(--red-3), var(--red-4));
+      border-radius: 100px; margin: 18px 0;
+      position: relative; overflow: hidden; max-width: 200px;
+    }
+    .heat::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(200%); } }
+
+    .pillar-stage { display: grid; grid-template-columns: auto 1fr; gap: 80px; align-items: center; }
+    .pillar-num {
+      font-size: clamp(120px, 16vw, 240px);
+      font-weight: 900; line-height: .85; letter-spacing: -.04em;
+      background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,0));
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+      -webkit-text-stroke: 2px rgba(255,255,255,.25);
+    }
+    .pillar-icon {
+      width: 80px; height: 80px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(255,255,255,.15), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; margin-bottom: 24px;
+    }
+
+    .big-list { list-style: none; display: flex; flex-direction: column; gap: 12px; max-width: 900px; }
+    .big-list li {
+      display: flex; align-items: center; gap: 18px;
+      padding: 16px 20px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px; font-size: 16px;
+      transition: all .25s;
+      color: rgba(255,255,255,.85);
+    }
+    .big-list li:hover { transform: translateX(6px); border-color: var(--red-2); background: rgba(207,46,46,.08); }
+    .big-list .marker {
+      flex-shrink: 0; width: 30px; height: 30px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800;
+      font-family: 'Space Grotesk', monospace;
+    }
+    .big-list.yes .marker { background: rgba(76,175,80,.15); color: #4caf50; border: 1px solid #4caf50; }
+    .big-list.no .marker { background: rgba(255,82,82,.15); color: #ff5252; border: 1px solid #ff5252; }
+    .big-list.num .marker { background: linear-gradient(135deg, var(--red-2), var(--red-4)); color: #fff; border: 1px solid var(--red-1); }
+
+    .tool-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .tool-card {
+      background: rgba(255,255,255,.04);
+      border: 2px solid rgba(255,255,255,.1);
+      border-radius: 18px; padding: 28px;
+      text-align: center; transition: all .3s;
+      backdrop-filter: blur(14px);
+    }
+    .tool-card:hover {
+      border-color: var(--red-2);
+      background: rgba(207,46,46,.1);
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(207,46,46,.3);
+    }
+    .tool-card .ti { font-size: 40px; margin-bottom: 14px; display: block; }
+    .tool-card h3 { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 6px; letter-spacing: -.015em; }
+    .tool-card p { font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.55; }
+
+    .alert-strip {
+      background: linear-gradient(90deg, rgba(255,82,82,.15), rgba(255,82,82,.04));
+      border-left: 4px solid #ff5252;
+      border-radius: 10px;
+      padding: 18px 24px; margin-top: 24px;
+      font-size: 14px; color: rgba(255,255,255,.85); line-height: 1.6;
+      max-width: 900px;
+    }
+    .alert-strip strong { color: #ff8a8a; font-weight: 700; }
+
+    .info-strip {
+      background: linear-gradient(90deg, rgba(207,46,46,.18), rgba(207,46,46,.04));
+      border-left: 4px solid var(--red-1);
+      border-radius: 10px;
+      padding: 18px 24px; margin-top: 20px;
+      font-size: 14px; color: rgba(255,255,255,.85); line-height: 1.6;
+      max-width: 900px;
+    }
+    .info-strip strong { color: #fff; font-weight: 700; }
+
+    .cmd {
+      display: inline-block;
+      background: rgba(255,58,58,.12);
+      border: 1px solid rgba(255,58,58,.4);
+      color: #ff8a8a;
+      font-family: 'Space Grotesk', monospace;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: .9em;
+    }
+
+    .step-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 1100px; }
+    .step-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px;
+      padding: 22px 24px;
+      transition: all .3s;
+    }
+    .step-card:hover { border-color: var(--red-2); background: rgba(207,46,46,.08); transform: translateY(-3px); }
+    .step-card .n {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 11px; letter-spacing: 2px;
+      color: var(--red-1); font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .step-card h3 { font-size: 19px; font-weight: 800; color: #fff; margin-bottom: 8px; letter-spacing: -.015em; line-height: 1.2; }
+    .step-card p { font-size: 13.5px; color: rgba(255,255,255,.65); line-height: 1.55; }
+
+    /* NAV */
+    .nav-bar {
+      position: fixed; bottom: 22px; right: 22px; z-index: 200;
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(20,20,20,.72);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 100px; padding: 6px 12px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.5);
+    }
+    .nav-btn {
+      width: 30px; height: 30px; border-radius: 50%; border: none;
+      background: rgba(255,255,255,.1); color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .25s;
+    }
+    .nav-btn:hover:not(:disabled) { background: var(--red-2); transform: scale(1.08); }
+    .nav-btn:disabled { opacity: .3; cursor: default; }
+    .counter {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 11px; color: rgba(255,255,255,.8);
+      font-weight: 600; letter-spacing: 1.5px;
+      min-width: 56px; text-align: center;
+      cursor: pointer; padding: 4px 8px; border-radius: 100px;
+      transition: background .2s; user-select: none;
+    }
+    .counter:hover { background: rgba(255,255,255,.1); }
+    .counter span { color: var(--red-1); }
+
+    .picker-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.85);
+      backdrop-filter: blur(20px);
+      z-index: 300;
+      display: flex; align-items: center; justify-content: center;
+      padding: 60px 40px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s;
+    }
+    .picker-overlay.open { opacity: 1; pointer-events: all; }
+    .picker-panel { max-width: 1100px; width: 100%; max-height: 80vh; overflow-y: auto; transform: scale(.94); transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+    .picker-overlay.open .picker-panel { transform: scale(1); }
+    .picker-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .picker-head h3 { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -.02em; }
+    .picker-head .hint { font-family: 'Space Grotesk', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.5); }
+    .picker-close { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); color: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+    .picker-close:hover { background: var(--red-2); border-color: var(--red-2); }
+    .picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+    .pick-cell { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all .25s; text-align: left; position: relative; overflow: hidden; }
+    .pick-cell:hover { background: rgba(207,46,46,.15); border-color: var(--red-2); transform: translateY(-2px); }
+    .pick-cell.active { background: linear-gradient(135deg, var(--red-2), var(--red-3)); border-color: var(--red-1); box-shadow: 0 8px 24px rgba(207,46,46,.4); }
+    .pick-cell .pn { font-family: 'Space Grotesk', monospace; font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--red-1); margin-bottom: 4px; }
+    .pick-cell.active .pn { color: rgba(255,255,255,.9); }
+    .pick-cell .pl { font-size: 12px; color: rgba(255,255,255,.7); font-weight: 500; line-height: 1.35; }
+    .pick-cell.active .pl { color: #fff; }
+    .pick-cell .pc { font-family: 'Space Grotesk', monospace; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.4); margin-top: 6px; }
+    .pick-cell.active .pc { color: rgba(255,255,255,.7); }
+
+    .progress-top { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: rgba(0,0,0,.15); z-index: 199; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--red-1), var(--red-3)); box-shadow: 0 0 20px var(--red-1); transition: width .65s cubic-bezier(.2,.8,.2,1); }
+
+    .key-hint { position: fixed; bottom: 22px; left: 22px; z-index: 199; font-family: 'Space Grotesk', monospace; font-size: 9px; color: rgba(255,255,255,.3); letter-spacing: 1.5px; text-transform: uppercase; display: flex; gap: 6px; align-items: center; }
+    .k { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); border-radius: 4px; padding: 2px 6px; font-size: 9px; }
+
+    @media (max-width: 900px) {
+      .slide { padding: 56px 24px 90px; }
+      .split-2, .split-asym, .step-grid, .tool-grid, .pillar-stage { grid-template-columns: 1fr; gap: 24px; }
+      .key-hint { display: none; }
+      .pillar-num { font-size: 100px; }
+    }
+
+    /* Stagger entrance */
+    .slide .inner > * {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .75s cubic-bezier(.2,.8,.2,1), transform .75s cubic-bezier(.2,.8,.2,1);
+      will-change: opacity, transform;
+    }
+    .slide.active .inner > * { opacity: 1; transform: translateY(0); }
+    .slide.active .inner > *:nth-child(1) { transition-delay: .18s; }
+    .slide.active .inner > *:nth-child(2) { transition-delay: .30s; }
+    .slide.active .inner > *:nth-child(3) { transition-delay: .42s; }
+    .slide.active .inner > *:nth-child(4) { transition-delay: .54s; }
+    .slide.active .inner > *:nth-child(5) { transition-delay: .66s; }
+    .slide.active .inner > *:nth-child(6) { transition-delay: .78s; }
+    .slide.active .inner > *:nth-child(n+7) { transition-delay: .9s; }
+
+    .slide .inner .split-2 > *,
+    .slide .inner .split-asym > *,
+    .slide .inner .step-grid > *,
+    .slide .inner .tool-grid > *,
+    .slide .inner .pillar-stage > *,
+    .slide .inner .big-list > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .65s cubic-bezier(.2,.8,.2,1), transform .65s cubic-bezier(.2,.8,.2,1);
+    }
+    .slide.active .inner .split-2 > *,
+    .slide.active .inner .split-asym > *,
+    .slide.active .inner .step-grid > *,
+    .slide.active .inner .tool-grid > *,
+    .slide.active .inner .pillar-stage > *,
+    .slide.active .inner .big-list > * {
+      opacity: 1; transform: translateY(0);
+    }
+    .slide.active .inner .step-grid > *:nth-child(1),
+    .slide.active .inner .tool-grid > *:nth-child(1),
+    .slide.active .inner .big-list > *:nth-child(1) { transition-delay: .50s; }
+    .slide.active .inner .step-grid > *:nth-child(2),
+    .slide.active .inner .tool-grid > *:nth-child(2),
+    .slide.active .inner .big-list > *:nth-child(2) { transition-delay: .58s; }
+    .slide.active .inner .step-grid > *:nth-child(3),
+    .slide.active .inner .tool-grid > *:nth-child(3),
+    .slide.active .inner .big-list > *:nth-child(3) { transition-delay: .66s; }
+    .slide.active .inner .step-grid > *:nth-child(4),
+    .slide.active .inner .tool-grid > *:nth-child(4),
+    .slide.active .inner .big-list > *:nth-child(4) { transition-delay: .74s; }
+    .slide.active .inner .big-list > *:nth-child(5) { transition-delay: .82s; }
+    .slide.active .inner .big-list > *:nth-child(6) { transition-delay: .90s; }
+    .slide.active .inner .big-list > *:nth-child(n+7) { transition-delay: .98s; }
+  </style>
+</head>
+<body>
+
+<div class="progress-top"><div class="progress-fill" id="prog-fill"></div></div>
+
+<div class="key-hint">
+  <span class="k">←</span><span class="k">→</span> navegar &nbsp;·&nbsp; <span class="k">G</span> índice
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1. CAPA -->
+  <div class="slide bg-noir active">
+    <div class="grid-bg"></div>
+    <div class="blob r1"></div>
+    <div class="blob r2"></div>
+    <div class="slide-tag"><span class="num">01</span><span class="bar"></span><span class="label">Abertura</span></div>
+
+    <div class="inner hero-wrap">
+      <div class="hero-logo-row">
+        <img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png" alt="WR ON">
+        <span style="color:rgba(255,255,255,.3);font-family:'Space Grotesk',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;">· Operação · Captações 2026</span>
+      </div>
+
+      <div class="hero-meta">
+        <span>Manual <strong>Operacional</strong></span>
+        <span>Setor <strong>Captação</strong></span>
+        <span><strong>WR ON</strong> · 2026</span>
+      </div>
+
+      <h1 class="h-display">
+        Passo a passo<br>
+        para as<br>
+        <span class="grad-red">captações.</span>
+      </h1>
+
+      <div style="display:flex;align-items:center;gap:24px;margin-top:36px;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="next()">
+          Iniciar
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+        <span style="color:rgba(255,255,255,.4);font-family:'Space Grotesk',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;">Processo completo · do lead ao cadastro</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. O QUE É CAPTAÇÃO -->
+  <div class="slide bg-onyx">
+    <div class="grid-bg dense"></div>
+    <div class="blob r3"></div>
+    <div class="slide-tag"><span class="num">02</span><span class="bar"></span><span class="label">Conceito</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="eyebrow">Conceito</div>
+      <h1 class="h-display">O que é<br>Captação<br>de <span class="grad-red">imóveis?</span></h1>
+      <ul class="big-list num" style="margin-top:36px;">
+        <li><span class="marker">1</span>Encontrar Apartamentos e Casas residenciais em que os pp's querem vender ou alugar.</li>
+        <li><span class="marker">2</span>Trazer esses imóveis para nossa plataforma interna.</li>
+        <li><span class="marker">3</span>Disponibilizar para parceiros. <strong style="color:#fff;">Exemplo: Quinto Andar.</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 3. PORTAIS -->
+  <div class="slide bg-coal">
+    <div class="grid-bg"></div>
+    <div class="blob r2"></div>
+    <div class="slide-tag"><span class="num">03</span><span class="bar"></span><span class="label">Portais</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="eyebrow">Onde atuamos</div>
+      <h2 class="h-title" style="margin-bottom:36px;">Quais portais imobiliários<br><span class="grad-red">trabalhamos?</span></h2>
+      <div class="tool-grid">
+        <div class="tool-card"><span class="ti">🏠</span><h3>ZAP Imóveis</h3></div>
+        <div class="tool-card"><span class="ti">🌐</span><h3>Imóvel Web</h3></div>
+        <div class="tool-card"><span class="ti">🔑</span><h3>Chaves na Mão</h3></div>
+        <div class="tool-card"><span class="ti">📱</span><h3>OLX</h3></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. PASSO 1 -->
+  <div class="slide bg-noir">
+    <div class="grid-bg"></div>
+    <div class="blob r1"></div>
+    <div class="slide-tag"><span class="num">04</span><span class="bar"></span><span class="label">Cap. ZAP · Passo 01</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage">
+        <div class="pillar-num">01</div>
+        <div>
+          <div class="eyebrow">Passo 1</div>
+          <h2 class="h-display">ZAP <span class="grad-red">Imóveis.</span></h2>
+          <ul class="big-list num" style="margin-top:28px;">
+            <li><span class="marker">1</span>Acessar o Drive do Portal Imobiliário específico.</li>
+            <li><span class="marker">2</span>Abrir "Planilhas Vendas Zap Imóveis".</li>
+            <li><span class="marker">3</span>Rolar a página até o final.</li>
+            <li><span class="marker">4</span>Verificar a quantidade de Novos Leads.</li>
+            <li><span class="marker">5</span>Pintar de cor <strong style="color:#7ec9ff;">Azul Neon</strong> os Novos Leads (coluna "proprietário").</li>
+            <li><span class="marker">6</span>Abastecer a Planilha de Leads do Portal e Modalidade específica (ao longo do dia).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. PASSO 2 -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r2"></div>
+    <div class="slide-tag"><span class="num">05</span><span class="bar"></span><span class="label">Cap. ZAP · Passo 02</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage">
+        <div class="pillar-num">02</div>
+        <div>
+          <div class="eyebrow">Passo 2</div>
+          <h2 class="h-display">ZAP <span class="grad-red">Imóveis.</span></h2>
+          <div class="statement" style="margin-top:24px;">
+            Chamar <strong>APENAS Proprietários</strong> de Imóveis Residenciais em regiões em que o <strong>Quinto Andar</strong> atue.
+          </div>
+          <ul class="big-list num" style="margin-top:24px;">
+            <li><span class="marker">1</span>Clicar no link.</li>
+            <li><span class="marker">2</span>Analisar <strong style="color:#fff;">TODOS os pontos</strong> para descartar Corretores e Imobiliárias.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. PASSO 3 - PONTO 1 FOTOS -->
+  <div class="slide bg-noir">
+    <div class="grid-bg"></div>
+    <div class="blob r1"></div>
+    <div class="slide-tag"><span class="num">06</span><span class="bar"></span><span class="label">Passo 3 · Ponto 01/05</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage">
+        <div class="pillar-num">03</div>
+        <div>
+          <div class="eyebrow">Passo 3</div>
+          <h2 class="h-display">ZAP <span class="grad-red">Imóveis.</span></h2>
+          <div class="h-sub" style="color:#fff;margin-top:10px;">Ponto 1 · <span style="color:var(--red-1);font-weight:700;">Fotos</span></div>
+          <ul class="big-list" style="margin-top:24px;">
+            <li><span class="marker" style="background:rgba(76,175,80,.15);color:#4caf50;border:1px solid #4caf50;">✓</span>Identificar que é um Imóvel Residencial.</li>
+            <li><span class="marker" style="background:rgba(255,82,82,.15);color:#ff5252;border:1px solid #ff5252;">✕</span>Analisar se não é Imóvel destruído (mofado, infiltrado, conservação precária, casa abandonada que precisa de reforma).</li>
+            <li><span class="marker" style="background:rgba(255,82,82,.15);color:#ff5252;border:1px solid #ff5252;">✕</span>Logotipos de Imobiliárias e Corretores.</li>
+            <li><span class="marker" style="background:rgba(76,175,80,.15);color:#4caf50;border:1px solid #4caf50;">✓</span>Logotipo do Quinto Andar <strong style="color:#fff;">apenas</strong> nas Áreas Comuns.</li>
+            <li><span class="marker" style="background:rgba(255,82,82,.15);color:#ff5252;border:1px solid #ff5252;">✕</span>Logotipo do Quinto Andar nas Áreas Comuns <strong style="color:#fff;">e</strong> no AP.</li>
+            <li><span class="marker" style="background:rgba(255,193,7,.15);color:#ffc107;border:1px solid #ffc107;">!</span>Fotos 3D (analisar caso a caso).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.1 PASSO 3 - PONTO 1 - REFERÊNCIAS VISUAIS -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r3"></div>
+    <div class="slide-tag"><span class="num">06.1</span><span class="bar"></span><span class="label">Passo 3 · Ponto 1 · Referências</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <h2 class="h-title" style="text-align:center;">Fotos de <span class="grad-red">referência.</span></h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;width:100%;max-width:1100px;align-items:center;">
+        <img src="ref-foto-1.png" alt="Referência 1" style="max-width:100%;max-height:62vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+        <img src="ref-foto-2.png" alt="Referência 2" style="max-width:100%;max-height:62vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.2 PASSO 3 - PONTO 1 - REFERÊNCIAS VISUAIS (2) -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r3"></div>
+    <div class="slide-tag"><span class="num">06.2</span><span class="bar"></span><span class="label">Passo 3 · Ponto 1 · Referências</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <h2 class="h-title" style="text-align:center;">Fotos de <span class="grad-red">referência.</span></h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;width:100%;max-width:1100px;align-items:center;">
+        <img src="ref-foto-3.png" alt="Referência 3" style="max-width:100%;max-height:62vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+        <img src="ref-foto-4.png" alt="Referência 4" style="max-width:100%;max-height:62vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. PASSO 3 - PONTO 2 PERFIL -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r2"></div>
+    <div class="slide-tag"><span class="num">07</span><span class="bar"></span><span class="label">Passo 3 · Ponto 02/05</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage">
+        <div class="pillar-num">03</div>
+        <div>
+          <div class="eyebrow">Passo 3 · Ponto 2</div>
+          <h2 class="h-display">ZAP <span class="grad-red">Imóveis.</span></h2>
+          <div class="h-sub" style="color:#fff;margin-top:10px;">Ponto 2 · <span style="color:var(--red-1);font-weight:700;">Perfil do anunciante</span></div>
+          <ul class="big-list num" style="margin-top:24px;">
+            <li><span class="marker">1</span>Foto.</li>
+            <li><span class="marker">2</span>Nome de Imobiliária.</li>
+            <li><span class="marker">3</span>Quantidade de Anúncios.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7.1 PASSO 3 - PONTO 2 - REFERÊNCIA VISUAL -->
+  <div class="slide bg-noir">
+    <div class="grid-bg"></div>
+    <div class="blob r1"></div>
+    <div class="slide-tag"><span class="num">07.1</span><span class="bar"></span><span class="label">Passo 3 · Ponto 2 · Referência</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <h2 class="h-title" style="text-align:center;">Foto de <span class="grad-red">referência.</span></h2>
+      <img src="ref-foto-5.png" alt="Referência 5" style="max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+    </div>
+  </div>
+
+  <!-- 8. PASSO 3 - PONTO 3 LOCALIZAÇÃO -->
+  <div class="slide bg-noir">
+    <div class="grid-bg"></div>
+    <div class="blob r1"></div>
+    <div class="slide-tag"><span class="num">08</span><span class="bar"></span><span class="label">Passo 3 · Ponto 03/05</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage">
+        <div class="pillar-num">03</div>
+        <div>
+          <div class="eyebrow">Passo 3 · Ponto 3</div>
+          <h2 class="h-display">ZAP <span class="grad-red">Imóveis.</span></h2>
+          <div class="h-sub" style="color:#fff;margin-top:10px;">Ponto 3 · <span style="color:var(--red-1);font-weight:700;">Localização</span></div>
+          <ul class="big-list num" style="margin-top:24px;">
+            <li><span class="marker">1</span>Copiar o Endereço.</li>
+            <li><span class="marker">2</span>Colar no nosso perfil de <strong style="color:#fff;">Carteira de Imóveis do Quinto Andar (CIQ)</strong> — Cadastrar Imóvel.</li>
+            <li><span class="marker">3</span>Conferir se é Região de Atuação.</li>
+          </ul>
+          <div class="info-strip"><strong>Exemplo 1:</strong> Se endereço não atendido para VENDA, mas atendido para LOCAÇÃO, analisar no MAPA se vale pedir <strong>ESTICADINHA</strong>.</div>
+          <div class="info-strip"><strong>Exemplo 2:</strong> Se região de atuação no MAPA estiver longe e não compensar pedir esticadinha, chamar na modalidade <strong>NÃO anunciada</strong> (se o Quinto Andar atender).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8.1 PASSO 3 - PONTO 3 - REFERÊNCIA VISUAL -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r2"></div>
+    <div class="slide-tag"><span class="num">08.1</span><span class="bar"></span><span class="label">Passo 3 · Ponto 3 · Referência</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <h2 class="h-title" style="text-align:center;">Foto de <span class="grad-red">referência.</span></h2>
+      <img src="ref-foto-6.png" alt="Referência 6" style="max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+    </div>
+  </div>
+
+  <!-- 8.2 PASSO 3 - PONTO 3 - REFERÊNCIA VISUAL (2) -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r3"></div>
+    <div class="slide-tag"><span class="num">08.2</span><span class="bar"></span><span class="label">Passo 3 · Ponto 3 · Referência</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <h2 class="h-title" style="text-align:center;">Foto de <span class="grad-red">referência.</span></h2>
+      <img src="ref-foto-7.png" alt="Referência 7" style="max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+    </div>
+  </div>
+
+  <!-- 9. PASSO 3 - PONTO 4 VALOR -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r2"></div>
+    <div class="slide-tag"><span class="num">09</span><span class="bar"></span><span class="label">Passo 3 · Ponto 04/05</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage">
+        <div class="pillar-num">03</div>
+        <div>
+          <div class="eyebrow">Passo 3 · Ponto 4</div>
+          <h2 class="h-display">ZAP <span class="grad-red">Imóveis.</span></h2>
+          <div class="h-sub" style="color:#fff;margin-top:10px;">Ponto 4 · <span style="color:var(--red-1);font-weight:700;">Valor do anúncio</span></div>
+          <p class="lead" style="margin-top:24px;font-size:22px;font-weight:500;">
+            Captamos imóveis a partir de <strong style="color:#fff;font-weight:900;">R$ 188.000,00</strong>.
+          </p>
+          <div class="alert-strip" style="margin-top:20px;">
+            <strong>OBS:</strong> Às vezes, analisando a metragem e fotos, vemos que é imóvel adequado, mas valor muito baixo. Nesses casos, analisar se pode ser <strong>erro de digitação</strong>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. PASSO 3 - PONTO 5 DESCRIÇÃO -->
+  <div class="slide bg-noir">
+    <div class="grid-bg"></div>
+    <div class="blob r1"></div>
+    <div class="slide-tag"><span class="num">10</span><span class="bar"></span><span class="label">Passo 3 · Ponto 05/05</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage" style="gap:48px;">
+        <div class="pillar-num">03</div>
+        <div>
+      <div class="eyebrow" style="color:#ff5252;">⚠ Passo 3 · Ponto 5 · MAIOR PONTO DE ATENÇÃO</div>
+      <h2 class="h-display">ZAP <span class="grad-red">Imóveis.</span></h2>
+      <div class="h-sub" style="color:#fff;margin-top:10px;">Ponto 5 · <span style="color:var(--red-1);font-weight:700;">Descrição do anúncio</span></div>
+      <ul class="big-list no" style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;max-width:none;">
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">✕</span>Palavra <strong style="color:#fff;">CRECI</strong>.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">!</span>Palavra <strong style="color:#fff;">FGTS</strong> — analisar; normalmente colocada por corretor.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">✕</span>Imóveis sem entrega das chaves ou na planta (reparar foto 3D).</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">✕</span>Palavra <strong style="color:#fff;">Construtora</strong>.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">✕</span>Palavra <strong style="color:#fff;">Consultor de negócios</strong>.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">✕</span>Palavra <strong style="color:#fff;">CDHU</strong> ou <strong style="color:#fff;">COHAB</strong>.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">✕</span>Frase: <strong style="color:#fff;">"DISPENSO CORRETORES, NÃO INSISTIR"</strong>.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">✕</span><strong style="color:#fff;">Código</strong> na descrição (tende a ser de imobiliária).</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">!</span>Várias casas no mesmo endereço (exceto condomínio).</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">✕</span>Frase: <strong style="color:#fff;">Imóvel sem documentação</strong>.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">!</span>Frase: <strong style="color:#fff;">não aceita financiamento</strong> — analisar motivo.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">✕</span>Já anunciado no <strong style="color:#fff;">QuintoAndar</strong> (período de 60 dias).</li>
+      </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10.1 PASSO 3 - PONTO 5 - REFERÊNCIA VISUAL -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r2"></div>
+    <div class="slide-tag"><span class="num">10.1</span><span class="bar"></span><span class="label">Passo 3 · Ponto 5 · Referência</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <h2 class="h-title" style="text-align:center;">Foto de <span class="grad-red">referência.</span></h2>
+      <img src="ref-foto-8.png" alt="Referência 8" style="max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+    </div>
+  </div>
+
+  <!-- 10.2 PASSO 3 - PONTO 5 - REFERÊNCIA VISUAL (2) -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r3"></div>
+    <div class="slide-tag"><span class="num">10.2</span><span class="bar"></span><span class="label">Passo 3 · Ponto 5 · Referência</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <h2 class="h-title" style="text-align:center;">Foto de <span class="grad-red">referência.</span></h2>
+      <img src="ref-foto-9.png" alt="Referência 9" style="max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+    </div>
+  </div>
+
+  <!-- 10.3 PASSO 3 - PONTO 5 - REFERÊNCIA VISUAL (3) -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r1"></div>
+    <div class="slide-tag"><span class="num">10.3</span><span class="bar"></span><span class="label">Passo 3 · Ponto 5 · Referência</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <h2 class="h-title" style="text-align:center;">Foto de <span class="grad-red">referência.</span></h2>
+      <img src="ref-foto-10.png" alt="Referência 10" style="max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+    </div>
+  </div>
+
+  <!-- 10.4 PASSO 3 - PONTO 5 - REFERÊNCIA VISUAL (4) -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r2"></div>
+    <div class="slide-tag"><span class="num">10.4</span><span class="bar"></span><span class="label">Passo 3 · Ponto 5 · Referência</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <h2 class="h-title" style="text-align:center;">Foto de <span class="grad-red">referência.</span></h2>
+      <img src="ref-foto-11.png" alt="Referência 11" style="max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+    </div>
+  </div>
+
+  <!-- 11. PASSO 4 -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r2"></div>
+    <div class="slide-tag"><span class="num">11</span><span class="bar"></span><span class="label">Passo 04</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage">
+        <div class="pillar-num">04</div>
+        <div>
+          <div class="eyebrow">Passo 4 · ZAP Imóveis</div>
+          <h2 class="h-display">Voltar à<br>planilha de <span class="grad-red">leads.</span></h2>
+          <ul class="big-list num" style="margin-top:24px;">
+            <li><span class="marker">1</span>Após passar por toda análise e estiver ok, seguir com a captação.</li>
+            <li><span class="marker">2</span>Copiar o(s) número(s) de telefone(s) fornecido(s) na Planilha.</li>
+            <li><span class="marker">3</span>Copiar a quantidade de números existente.</li>
+            <li><span class="marker">4</span>Colar os números na sua própria conversa do WhatsApp.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12. PASSO 5 -->
+  <div class="slide bg-noir">
+    <div class="grid-bg"></div>
+    <div class="blob r1"></div>
+    <div class="slide-tag"><span class="num">12</span><span class="bar"></span><span class="label">Passo 05</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage" style="gap:48px;">
+        <div class="pillar-num">05</div>
+        <div>
+      <div class="eyebrow">Passo 5</div>
+      <h2 class="h-display">Analisar perfil<br>do <span class="grad-red">WhatsApp.</span></h2>
+      <ul class="big-list num" style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;max-width:none;">
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">1</span>Abrir nova conversa com o número copiado.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">2</span><strong style="color:#fff;">Conta Comercial</strong> (tipo de empresa). Ex.: Corretor João, Imobiliária X.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">3</span><strong style="color:#fff;">Foto de Perfil</strong> (crachá, plano de fundo).</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">4</span>Imóvel de padrão alto e pessoa da foto não aparenta ser o dono = pode ser corretor.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">5</span><strong style="color:#fff;">Nome do WhatsApp</strong>. Ex.: Corretor João, Consultor João.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">6</span><strong style="color:#fff;">Mensagens Temporárias:</strong> SEMPRE "Desativadas" antes de enviar.</li>
+        <li style="padding:11px 14px;font-size:14px;grid-column:1 / -1;"><span class="marker" style="width:26px;height:26px;font-size:12px;">7</span><strong style="color:#fff;">Etiquetar Conversa:</strong> colocar etiqueta com Seu Nome.</li>
+      </ul>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:24px;margin-top:18px;align-items:center;">
+        <div class="info-strip" style="margin-top:0;"><strong>Dica:</strong> Às vezes o WhatsApp é comercial, mas faz venda de outros produtos sem relação com imóveis (loja de utilidades, doces, etc). E o passo 7, da etiqueta, é um exemplo na imagem ao lado.</div>
+        <img src="ref-foto-12.png" alt="Referência 12 — etiquetas WhatsApp" style="max-width:100%;max-height:34vh;width:auto;height:auto;object-fit:contain;border-radius:18px;display:block;margin:0 auto;box-shadow:0 18px 45px rgba(0,0,0,.55),0 8px 22px rgba(207,46,46,.2);border:1px solid rgba(255,255,255,.08);">
+      </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 13. PASSO 6 -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r3"></div>
+    <div class="slide-tag"><span class="num">13</span><span class="bar"></span><span class="label">Passo 06</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="max-width:1400px;">
+      <div class="pillar-stage" style="gap:32px;">
+        <div class="pillar-num">06</div>
+        <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:start;">
+
+        <div>
+          <div class="eyebrow">Passo 6</div>
+          <h2 class="h-title">Mandar a<br><span class="grad-red">mensagem.</span></h2>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px;">
+            <div class="step-card" style="padding:16px 18px;">
+              <div class="n">Comando</div>
+              <h3 style="margin-bottom:6px;"><span class="cmd">/venda</span></h3>
+              <p>Quando for venda.</p>
+            </div>
+            <div class="step-card" style="padding:16px 18px;">
+              <div class="n">Comando</div>
+              <h3 style="margin-bottom:6px;"><span class="cmd">/locação</span></h3>
+              <p>Quando for locação.</p>
+            </div>
+          </div>
+
+          <ul class="big-list num" style="margin-top:18px;gap:8px;">
+            <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">1</span>Editar mensagens pré-prontas: <strong style="color:#fff;">Nome do pp</strong> + <strong style="color:#fff;">quem chama</strong>.</li>
+            <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">2</span>Mandar a mensagem.</li>
+            <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">3</span>Copiar o link do anúncio.</li>
+            <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">4</span>Colar o link na conversa após mandar.</li>
+          </ul>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px;align-items:center;">
+          <img src="ref-foto-13.png" alt="Ref. /venda" style="max-width:100%;max-height:22vh;width:auto;height:auto;object-fit:contain;border-radius:14px;display:block;box-shadow:0 14px 36px rgba(0,0,0,.55),0 6px 18px rgba(207,46,46,.2);border:1px solid rgba(255,255,255,.08);">
+          <img src="ref-foto-14.png" alt="Ref. /locação" style="max-width:100%;max-height:22vh;width:auto;height:auto;object-fit:contain;border-radius:14px;display:block;box-shadow:0 14px 36px rgba(0,0,0,.55),0 6px 18px rgba(207,46,46,.2);border:1px solid rgba(255,255,255,.08);">
+          <img src="ref-foto-15.png" alt="Ref. mensagem final" style="max-width:100%;max-height:32vh;width:auto;height:auto;object-fit:contain;border-radius:16px;display:block;box-shadow:0 18px 45px rgba(0,0,0,.55),0 8px 22px rgba(207,46,46,.2);border:1px solid rgba(255,255,255,.08);">
+        </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 14. PASSO 7 -->
+  <div class="slide bg-noir">
+    <div class="grid-bg"></div>
+    <div class="blob r2"></div>
+    <div class="slide-tag"><span class="num">14</span><span class="bar"></span><span class="label">Passo 07</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage" style="gap:36px;">
+        <div class="pillar-num">07</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;">
+          <div>
+            <div class="eyebrow">Passo 7</div>
+            <h1 class="h-display">Voltar à planilha<br>de <span class="grad-red">leads.</span></h1>
+            <p class="lead" style="margin-top:22px;font-size:18px;">
+              Após chamar o primeiro Lead, voltar na planilha e preencher a coluna <strong style="color:#fff;">"Realizar a Ação"</strong>. Isso informa a ação tomada referente a cada Lead.
+            </p>
+            <div class="alert-strip" style="margin-top:18px;">
+              Se <strong>nada estiver marcado</strong>, esse lead <strong>não foi analisado</strong>.
+            </div>
+          </div>
+          <img src="ref-foto-16.png" alt="Referência 16 — planilha de leads" style="max-width:100%;max-height:70vh;width:auto;height:auto;object-fit:contain;border-radius:18px;display:block;margin:0 auto;box-shadow:0 18px 45px rgba(0,0,0,.55),0 8px 22px rgba(207,46,46,.2);border:1px solid rgba(255,255,255,.08);">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 15. PASSO 8 - CATEGORIAS -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r1"></div>
+    <div class="slide-tag"><span class="num">15</span><span class="bar"></span><span class="label">Passo 08</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage" style="gap:48px;">
+        <div class="pillar-num">08</div>
+        <div>
+          <div class="eyebrow">Passo 8 · Respostas</div>
+          <h2 class="h-display">Os proprietários<br><span class="grad-red">irão...</span></h2>
+          <div class="step-grid" style="margin-top:28px;">
+            <div class="step-card"><div class="n">8.1</div><h3>Informar que já está anunciado</h3><p>No Quinto Andar.</p></div>
+            <div class="step-card"><div class="n">8.2</div><h3>Informar que é corretor</h3><p>Ou imobiliária.</p></div>
+            <div class="step-card"><div class="n">8.3 · Recusar</div><h3>Recusar / reclamar</h3><p>Não quer anunciar.</p></div>
+            <div class="step-card"><div class="n">8.3 · Ignorar</div><h3>Ignorar</h3><p>Sem resposta.</p></div>
+            <div class="step-card"><div class="n">8.4 · Info</div><h3>Solicitar mais informações</h3><p>Pedir detalhes do processo.</p></div>
+            <div class="step-card"><div class="n">8.4 · Aceitar</div><h3>Aceitar anunciar</h3><p>Seguir para cadastro.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 16. PASSO 8.1 -->
+  <div class="slide bg-noir">
+    <div class="grid-bg"></div>
+    <div class="blob r1"></div>
+    <div class="slide-tag"><span class="num">16</span><span class="bar"></span><span class="label">Passo 08.1</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage" style="gap:36px;">
+        <div class="pillar-num">8.1</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;">
+          <div>
+            <div class="eyebrow">Passo 8.1</div>
+            <h1 class="h-display">Já anunciado<br>no <span class="grad-red">QuintoAndar.</span></h1>
+            <p class="lead" style="margin-top:22px;font-size:20px;">
+              Se ele informar que já foi anunciado no QuintoAndar, digite <span class="cmd">/show</span> e pode <strong style="color:#fff;">arquivar a conversa</strong>.
+            </p>
+          </div>
+          <img src="ref-foto-17.png" alt="Referência 17 — /show resposta" style="max-width:100%;max-height:70vh;width:auto;height:auto;object-fit:contain;border-radius:18px;display:block;margin:0 auto;box-shadow:0 18px 45px rgba(0,0,0,.55),0 8px 22px rgba(207,46,46,.2);border:1px solid rgba(255,255,255,.08);">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 17. PASSO 8.2 -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r2"></div>
+    <div class="slide-tag"><span class="num">17</span><span class="bar"></span><span class="label">Passo 08.2</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage" style="gap:36px;">
+        <div class="pillar-num">8.2</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;">
+          <div>
+            <div class="eyebrow">Passo 8.2</div>
+            <h1 class="h-display">É <span class="grad-red">corretor.</span></h1>
+            <p class="lead" style="margin-top:22px;font-size:20px;">
+              Se ele informar que é corretor, digite <span class="cmd">/show</span>, <strong style="color:#fff;">exclua as mensagens enviadas anteriormente</strong> e pode arquivar a conversa.
+            </p>
+          </div>
+          <img src="ref-foto-18.png" alt="Referência 18 — corretor" style="max-width:100%;max-height:70vh;width:auto;height:auto;object-fit:contain;border-radius:18px;display:block;margin:0 auto;box-shadow:0 18px 45px rgba(0,0,0,.55),0 8px 22px rgba(207,46,46,.2);border:1px solid rgba(255,255,255,.08);">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 18. PASSO 8.3 - IGNOROU -->
+  <div class="slide bg-noir">
+    <div class="grid-bg"></div>
+    <div class="blob r1"></div>
+    <div class="slide-tag"><span class="num">18</span><span class="bar"></span><span class="label">Passo 08.3</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage" style="gap:48px;">
+        <div class="pillar-num">8.3</div>
+        <div>
+          <div class="eyebrow">Passo 8.3 · Lead ignorou</div>
+          <h2 class="h-display">Mandar <span class="cmd" style="font-size:.7em;">/podemos</span><br>no <span class="grad-red">dia seguinte.</span></h2>
+          <p class="lead" style="margin-top:22px;">
+            Se ele ignorar — mandar nossa mensagem padrão <span class="cmd">/podemos</span> no dia seguinte, de forma gradual, intercalando sempre de 1 a 5.
+          </p>
+          <div class="alert-strip" style="margin-top:18px;">
+            Com volume alto, mandar <strong>/podemos</strong> para todos os contatos ignorados levará tempo. Por isso, <strong>de hora em hora</strong> pare o processo de captação para disparar esse atalho a um número limitado de contatos. Dependendo do volume do dia anterior, distribua por hora a quantidade no dia seguinte.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 19. PASSO 8.3 - FLUXO ETIQUETAS -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r3"></div>
+    <div class="slide-tag"><span class="num">19</span><span class="bar"></span><span class="label">Passo 08.3 · Fluxo</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage" style="gap:48px;">
+        <div class="pillar-num">8.3</div>
+        <div>
+      <div class="eyebrow">Como saber quais leads chamei ontem?</div>
+      <h2 class="h-title" style="font-size:clamp(28px,3.6vw,52px);">Fluxo de <span class="grad-red">etiquetas</span> no WhatsApp.</h2>
+      <ul class="big-list num" style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;max-width:none;">
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">1</span>No WhatsApp, clicar nos <strong style="color:#fff;">"3 pontinhos"</strong>.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">2</span>Clicar em <strong style="color:#fff;">"Etiquetas"</strong>.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">3</span>Selecionar a Etiqueta com <strong style="color:#fff;">Seu Nome</strong>.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">4</span>Identificar a leva de leads do dia anterior pela data.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">5</span>Selecionar leads sem interação (link sendo a última mensagem).</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">6</span>Adicionar etiqueta de <strong style="color:#fff;">"podemos"</strong>.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">7</span>Filtrar apenas <strong style="color:#fff;">"podemos" + etiqueta do seu nome</strong>.</li>
+        <li style="padding:11px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">8</span>Disparar as mensagens por blocos.</li>
+        <li style="padding:11px 14px;font-size:14px;grid-column:1 / -1;"><span class="marker" style="width:26px;height:26px;font-size:12px;">9</span>Para mensagens já disparadas, <strong style="color:#fff;">retirar a etiqueta de "podemos"</strong>.</li>
+      </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 19.1 PASSO 8.3 · Fluxo · Referência -->
+  <div class="slide bg-noir">
+    <div class="grid-bg"></div>
+    <div class="blob r1"></div>
+    <div class="slide-tag"><span class="num">19.1</span><span class="bar"></span><span class="label">Passo 08.3 · Fluxo · Referência</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <h2 class="h-title" style="text-align:center;">Foto de <span class="grad-red">referência.</span></h2>
+      <img src="ref-foto-19.png" alt="Referência 19" style="max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+    </div>
+  </div>
+
+  <!-- 19.2 PASSO 8.3 · Fluxo · Referência (2) -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r2"></div>
+    <div class="slide-tag"><span class="num">19.2</span><span class="bar"></span><span class="label">Passo 08.3 · Fluxo · Referência</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <h2 class="h-title" style="text-align:center;">Foto de <span class="grad-red">referência.</span></h2>
+      <img src="ref-foto-20.png" alt="Referência 20" style="max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+    </div>
+  </div>
+
+  <!-- 19.3 PASSO 8.3 · Fluxo · Referência (3) -->
+  <div class="slide bg-noir">
+    <div class="grid-bg"></div>
+    <div class="blob r3"></div>
+    <div class="slide-tag"><span class="num">19.3</span><span class="bar"></span><span class="label">Passo 08.3 · Fluxo · Referência</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <h2 class="h-title" style="text-align:center;">Foto de <span class="grad-red">referência.</span></h2>
+      <img src="ref-foto-21.png" alt="Referência 21" style="max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+    </div>
+  </div>
+
+  <!-- 20. PASSO 8.4 -->
+  <div class="slide bg-blade">
+    <div class="grid-bg" style="opacity:.4"></div>
+    <div class="slide-tag"><span class="num" style="color:#fff">20</span><span class="bar" style="background:#fff"></span><span class="label" style="color:rgba(255,255,255,.7)">Passo 08.4</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage" style="gap:36px;">
+        <div class="pillar-num" style="-webkit-text-stroke-color:rgba(255,255,255,.4);">8.4</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;">
+          <div>
+            <div class="eyebrow" style="color:#fff;">Passo 8.4 · Aceitou anunciar</div>
+            <h1 class="h-display" style="color:#fff;">Aceitou<br><span class="em-italic" style="color:rgba(255,255,255,.55);">anunciar.</span></h1>
+            <p class="lead" style="color:#fff;font-size:18px;margin-top:20px;">
+              Digite <span class="cmd" style="background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.5);color:#fff;">/cadastro</span> — removendo apenas as informações que já possuir no anúncio.
+            </p>
+            <div class="alert-strip" style="margin-top:18px;border-left-color:#fff;background:linear-gradient(90deg,rgba(255,255,255,.15),rgba(255,255,255,.04));">
+              Neste momento é necessário <strong style="color:#fff;">criar o cadastro do pp no Pipefy</strong> (nosso sistema interno). Preencher o básico e estipular horário de vencimento do card (para não esquecer de cobrar).
+            </div>
+          </div>
+          <img src="ref-foto-22.png" alt="Referência 22 — /cadastro" style="max-width:100%;max-height:70vh;width:auto;height:auto;object-fit:contain;border-radius:18px;display:block;margin:0 auto;box-shadow:0 18px 45px rgba(0,0,0,.6),0 8px 22px rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.2);">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 21. PASSO 8.4.1 - PIPEFY -->
+  <div class="slide bg-noir">
+    <div class="grid-bg"></div>
+    <div class="blob r1"></div>
+    <div class="slide-tag"><span class="num">21</span><span class="bar"></span><span class="label">Passo 08.4.1 · Pipefy</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner">
+      <div class="pillar-stage" style="gap:32px;">
+        <div class="pillar-num" style="font-size:clamp(80px,11vw,180px);">8.4.1</div>
+        <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center;">
+        <div>
+          <div class="eyebrow">Passo 8.4.1 · Pipefy</div>
+          <h2 class="h-display">Criar cadastro<br>do <span class="grad-red">pp.</span></h2>
+          <p class="lead" style="margin-top:18px;font-size:17px;">Clicar em <strong style="color:#fff;">"Criar novo card"</strong>. Preencher APENAS:</p>
+          <ul class="big-list num" style="margin-top:16px;gap:8px;">
+            <li style="padding:10px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">1</span>Telefone de WhatsApp.</li>
+            <li style="padding:10px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">2</span>Canal de Captação.</li>
+            <li style="padding:10px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">3</span>Auxiliar de Captação (Seu Nome).</li>
+            <li style="padding:10px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">4</span>Data do 1° contato.</li>
+            <li style="padding:10px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">5</span>Tipo de Imóvel.</li>
+            <li style="padding:10px 14px;font-size:14px;"><span class="marker" style="width:26px;height:26px;font-size:12px;">6</span><strong style="color:#fff;">Data de Vencimento</strong> — mesmo dia, <strong style="color:#fff;">3h para frente</strong>.</li>
+          </ul>
+        </div>
+        <img src="ref-foto-23.png" alt="Referência 23 — Criar novo card" style="max-width:100%;max-height:70vh;width:auto;height:auto;object-fit:contain;border-radius:18px;display:block;margin:0 auto;box-shadow:0 18px 45px rgba(0,0,0,.55),0 8px 22px rgba(207,46,46,.2);border:1px solid rgba(255,255,255,.08);">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 21.1 PASSO 8.4.1 · Pipefy · Referência -->
+  <div class="slide bg-coal">
+    <div class="grid-bg dense"></div>
+    <div class="blob r2"></div>
+    <div class="slide-tag"><span class="num">21.1</span><span class="bar"></span><span class="label">Passo 08.4.1 · Pipefy · Referência</span></div>
+    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+
+    <div class="inner" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <h2 class="h-title" style="text-align:center;">Foto de <span class="grad-red">referência.</span></h2>
+      <img src="ref-foto-24.png" alt="Referência 24" style="max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain;border-radius:24px;display:block;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.55),0 10px 30px rgba(207,46,46,.25);border:1px solid rgba(255,255,255,.08);">
+    </div>
+  </div>
+
+  <!-- 22. ENCERRAMENTO -->
+  <div class="slide bg-blade">
+    <div class="grid-bg" style="opacity:.4"></div>
+    <div class="blob r3"></div>
+
+    <div class="inner stmt-center">
+      <div class="hero-logo-row" style="justify-content:center;">
+        <img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png" alt="WR ON" style="height:52px;">
+      </div>
+      <h1 class="h-mega" style="color:#fff;">
+        Processo de<br>
+        captações<br>
+        <span class="em-italic" style="color:rgba(255,255,255,.55);">finalizado.</span>
+      </h1>
+      <p class="lead" style="color:#fff;font-size:22px;font-weight:500;margin:36px auto 0;">
+        <strong>WR ON</strong> · Captação imobiliária de elite.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-bar">
+  <button class="nav-btn" id="btn-prev" onclick="prev()" disabled title="Anterior (←)">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <span class="counter" id="counter" onclick="openPicker()" title="Ir para slide…"><span id="cur">01</span> / <span id="tot">22</span></span>
+  <button class="nav-btn" onclick="openPicker()" title="Índice de slides">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+  </button>
+  <button class="nav-btn" id="btn-next" onclick="next()" title="Próximo (→)">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+</div>
+
+<div class="picker-overlay" id="picker" onclick="if(event.target===this)closePicker()">
+  <div class="picker-panel">
+    <div class="picker-head">
+      <h3>Índice de slides</h3>
+      <span class="hint">Clique para ir · ESC fecha</span>
+      <button class="picker-close" onclick="closePicker()">✕</button>
+    </div>
+    <div class="picker-grid" id="picker-grid"></div>
+  </div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let cur = 0;
+  let animating = false;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  document.getElementById('tot').textContent = pad(total);
+
+  function updateUI() {
+    document.getElementById('cur').textContent = pad(cur+1);
+    document.getElementById('btn-prev').disabled = cur === 0;
+    document.getElementById('btn-next').disabled = cur === total - 1;
+    document.getElementById('prog-fill').style.width = ((cur+1)/total*100) + '%';
+  }
+
+  function goTo(idx) {
+    if (animating || idx === cur || idx < 0 || idx >= total) return;
+    animating = true;
+    const prevSlide = slides[cur];
+    const nextSlide = slides[idx];
+    prevSlide.classList.add('exit');
+    prevSlide.classList.remove('active');
+    nextSlide.classList.add('active');
+    cur = idx;
+    updateUI();
+    setTimeout(() => { prevSlide.classList.remove('exit'); animating = false; }, 680);
+  }
+
+  function next() { goTo(cur + 1); }
+  function prev() { goTo(cur - 1); }
+
+  const picker = document.getElementById('picker');
+  const pickerGrid = document.getElementById('picker-grid');
+
+  function buildPicker() {
+    pickerGrid.innerHTML = '';
+    slides.forEach((s, i) => {
+      const tag = s.querySelector('.slide-tag');
+      let label = `Slide ${pad(i+1)}`;
+      let chap = '';
+      if (tag) {
+        const lbl = tag.querySelector('.label');
+        if (lbl) {
+          const txt = lbl.textContent.trim();
+          const parts = txt.split('·').map(x => x.trim());
+          if (parts.length > 1) { chap = parts[0]; label = parts.slice(1).join(' · '); }
+          else { label = txt; }
+        }
+      } else {
+        const h = s.querySelector('h1');
+        if (h) label = h.textContent.replace(/\s+/g,' ').trim().slice(0, 40);
+        chap = 'Statement';
+      }
+      const cell = document.createElement('button');
+      cell.className = 'pick-cell' + (i === cur ? ' active' : '');
+      cell.innerHTML = `<div class="pn">${pad(i+1)}</div><div class="pl">${label}</div>${chap ? `<div class="pc">${chap}</div>` : ''}`;
+      cell.onclick = () => { goTo(i); closePicker(); };
+      pickerGrid.appendChild(cell);
+    });
+  }
+
+  function openPicker() { buildPicker(); picker.classList.add('open'); }
+  function closePicker() { picker.classList.remove('open'); }
+
+  document.addEventListener('keydown', e => {
+    if (picker.classList.contains('open')) {
+      if (e.key === 'Escape') { e.preventDefault(); closePicker(); }
+      return;
+    }
+    if (['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)) { e.preventDefault(); next(); }
+    if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+    if (e.key === 'Home') goTo(0);
+    if (e.key === 'End') goTo(total-1);
+    if (e.key === 'g' || e.key === 'G') { e.preventDefault(); openPicker(); }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) dx < 0 ? next() : prev();
+  }, { passive: true });
+
+  updateUI();
+</script>
+</body>
+</html>

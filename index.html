@@ -1,13 +1,291 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=onboarding.html">
-  <title>WR ON · Onboarding</title>
-  <link rel="canonical" href="onboarding.html">
-  <script>location.replace('onboarding.html');</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WR ON · Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red-1: #ff3a3a;
+      --red-2: #cf2e2e;
+      --red-3: #a01a1a;
+      --red-4: #6b0000;
+      --black: #0a0a0a;
+      --ink: #1a1a1a;
+      --bone: #faf7f2;
+      --paper: #f0ece4;
+      --line: #e5e0d6;
+      --muted: #6b6b6b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; min-height: 100%;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: radial-gradient(ellipse at top right, #1a0606 0%, #0a0a0a 50%, #000 100%);
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .stage {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 40px;
+      overflow: hidden;
+    }
+
+    .grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(207,46,46,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(207,46,46,.06) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+      pointer-events: none; z-index: 1;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: .5;
+      pointer-events: none;
+      z-index: 2;
+      animation: float 14s ease-in-out infinite;
+    }
+    .blob.r1 { width: 500px; height: 500px; background: #cf2e2e; top: -150px; right: -150px; }
+    .blob.r2 { width: 380px; height: 380px; background: #6b0000; bottom: -120px; left: -100px; animation-delay: -7s; }
+    .blob.r3 { width: 450px; height: 450px; background: #ff3a3a; top: 40%; left: 50%; animation-delay: -3s; opacity: .25; }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -40px) scale(1.1); }
+      66% { transform: translate(-20px, 30px) scale(.95); }
+    }
+
+    .inner {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .top-tag {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Space Grotesk', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red-1);
+      margin-bottom: 32px;
+    }
+    .top-tag .dot {
+      width: 8px; height: 8px;
+      background: var(--red-1);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--red-1);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .6; transform: scale(1.3); }
+    }
+
+    .brand {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: clamp(48px, 9vw, 120px);
+      line-height: .9;
+      letter-spacing: -.04em;
+      margin-bottom: 24px;
+    }
+    .brand .red { color: var(--red-1); }
+    .brand .slash {
+      display: inline-block;
+      color: var(--red-2);
+      transform: translateY(-6px);
+      margin: 0 4px;
+    }
+
+    .lede {
+      font-size: clamp(16px, 1.4vw, 20px);
+      color: rgba(255,255,255,.7);
+      max-width: 640px;
+      line-height: 1.55;
+      margin-bottom: 64px;
+      font-weight: 300;
+    }
+
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      position: relative;
+      display: block;
+      padding: 40px 36px 36px;
+      background: linear-gradient(180deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.01) 100%);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 4px;
+      text-decoration: none;
+      color: #fff;
+      overflow: hidden;
+      transition: transform .4s cubic-bezier(.2,.8,.2,1),
+                  border-color .4s ease,
+                  background .4s ease;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(207,46,46,.0) 0%, rgba(207,46,46,.15) 100%);
+      opacity: 0;
+      transition: opacity .4s ease;
+      pointer-events: none;
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--red-2);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform .4s cubic-bezier(.2,.8,.2,1);
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(207,46,46,.4);
+      background: linear-gradient(180deg, rgba(207,46,46,.08) 0%, rgba(255,255,255,.01) 100%);
+    }
+    .card:hover::before { opacity: 1; }
+    .card:hover::after { transform: scaleY(1); }
+
+    .card-num {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: var(--red-1);
+      margin-bottom: 28px;
+    }
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 36px;
+      line-height: 1;
+      letter-spacing: -.02em;
+      margin-bottom: 16px;
+    }
+    .card-desc {
+      font-size: 15px;
+      line-height: 1.55;
+      color: rgba(255,255,255,.6);
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+    .card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Space Grotesk', monospace;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red-1);
+      font-weight: 600;
+    }
+    .card-cta .arrow {
+      display: inline-block;
+      transition: transform .3s ease;
+    }
+    .card:hover .card-cta .arrow {
+      transform: translateX(6px);
+    }
+
+    .foot {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Space Grotesk', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+    }
+
+    @media (max-width: 640px) {
+      .stage { padding: 60px 24px; }
+      .menu { grid-template-columns: 1fr; }
+      .card { padding: 32px 28px 28px; }
+      .card-title { font-size: 28px; }
+    }
+  </style>
 </head>
 <body>
-  <p>Redirecionando para <a href="onboarding.html">onboarding.html</a>…</p>
+  <div class="stage">
+    <div class="grid-bg"></div>
+    <div class="blob r1"></div>
+    <div class="blob r2"></div>
+    <div class="blob r3"></div>
+
+    <div class="inner">
+      <div class="top-tag">
+        <span class="dot"></span>
+        <span>WR ON · Hub Interno</span>
+      </div>
+
+      <h1 class="brand">
+        WR<span class="slash">/</span><span class="red">ON</span>
+      </h1>
+
+      <p class="lede">
+        Documentação operacional. Escolha o material que deseja acessar.
+      </p>
+
+      <nav class="menu">
+        <a class="card" href="onboarding.html">
+          <div class="card-num">01 · Time</div>
+          <h2 class="card-title">Onboarding</h2>
+          <p class="card-desc">
+            Apresentação da agência, cultura, processos e expectativas para novos integrantes do time.
+          </p>
+          <span class="card-cta">
+            Abrir deck <span class="arrow">→</span>
+          </span>
+        </a>
+
+        <a class="card" href="captacoes.html">
+          <div class="card-num">02 · Produção</div>
+          <h2 class="card-title">Captações</h2>
+          <p class="card-desc">
+            Passo a passo das captações: pré-produção, set, referências de foto e entrega.
+          </p>
+          <span class="card-cta">
+            Abrir guia <span class="arrow">→</span>
+          </span>
+        </a>
+      </nav>
+
+      <div class="foot">
+        <span>WR ON © 2026</span>
+        <span>Interno · Não distribuir</span>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
