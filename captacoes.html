@@ -236,7 +236,6 @@
 
     .big-list { list-style: none; display: flex; flex-direction: column; gap: 12px; max-width: 900px; }
     .big-list li {
-      display: flex; align-items: center; gap: 18px;
       padding: 16px 20px;
       background: rgba(255,255,255,.05);
       border: 1px solid rgba(255,255,255,.1);
@@ -248,7 +247,8 @@
     .big-list .marker {
       flex-shrink: 0; width: 30px; height: 30px;
       border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
+      display: inline-flex; align-items: center; justify-content: center;
+      vertical-align: middle; margin-right: 18px;
       font-size: 13px; font-weight: 800;
       font-family: 'Space Grotesk', monospace;
     }
