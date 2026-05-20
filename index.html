@@ -102,19 +102,16 @@
     }
 
     .brand {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      font-size: clamp(48px, 9vw, 120px);
-      line-height: .9;
-      letter-spacing: -.04em;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
     }
-    .brand .red { color: var(--red-1); }
-    .brand .slash {
-      display: inline-block;
-      color: var(--red-2);
-      transform: translateY(-6px);
-      margin: 0 4px;
+    .brand img {
+      height: clamp(56px, 8vw, 96px);
+      width: auto;
+      filter: brightness(0) invert(1);
+      user-select: none;
+      -webkit-user-drag: none;
     }
 
     .lede {
@@ -250,7 +247,7 @@
       </div>
 
       <h1 class="brand">
-        WR<span class="slash">/</span><span class="red">ON</span>
+        <img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png" alt="WR ON">
       </h1>
 
       <p class="lede">
