@@ -125,8 +125,38 @@
       top: 24px;
       right: 40px;
       z-index: 10;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      cursor: pointer;
     }
-    .slide-logo img { height: 22px; opacity: .6; }
+    .slide-logo img { height: 22px; opacity: .6; transition: opacity .25s ease; }
+    .slide-logo .hub-back {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(0,0,0,.45);
+      padding: 6px 10px;
+      border: 1px solid rgba(0,0,0,.18);
+      border-radius: 100px;
+      transition: color .25s ease, border-color .25s ease, background .25s ease;
+    }
+    .bg-noir .slide-logo .hub-back,
+    .bg-coal .slide-logo .hub-back,
+    .bg-onyx .slide-logo .hub-back,
+    .bg-blood .slide-logo .hub-back,
+    .bg-blade .slide-logo .hub-back {
+      color: rgba(255,255,255,.55);
+      border-color: rgba(255,255,255,.2);
+    }
+    .slide-logo:hover img { opacity: 1; }
+    .slide-logo:hover .hub-back {
+      color: var(--red-1);
+      border-color: var(--red-2);
+      background: rgba(207,46,46,.08);
+    }
     .bg-noir .slide-logo img,
     .bg-coal .slide-logo img,
     .bg-onyx .slide-logo img,
@@ -1074,7 +1104,7 @@
     <div class="grid-bg"></div>
     <div class="blob r1"></div>
     <div class="slide-tag"><span class="num">02</span><span class="bar"></span><span class="label">Cap. 01 · A empresa</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner stmt-center">
       <div class="eyebrow reveal">Quem somos</div>
@@ -1094,7 +1124,7 @@
     <div class="grid-bg"></div>
     <div class="blob r2"></div>
     <div class="slide-tag"><span class="num">03</span><span class="bar"></span><span class="label">Cap. 01 · Identidade</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="split-2">
@@ -1126,7 +1156,7 @@
   <div class="slide bg-blade">
     <div class="grid-bg" style="opacity:.4"></div>
     <div class="slide-tag"><span class="num" style="color:#fff">04</span><span class="bar" style="background:#fff"></span><span class="label" style="color:rgba(255,255,255,.7)">Cap. 01 · Missão</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner stmt-center">
       <div class="eyebrow reveal" style="color:#fff;">★ Nossa missão</div>
@@ -1146,7 +1176,7 @@
     <div class="grid-bg"></div>
     <div class="blob r1"></div>
     <div class="slide-tag"><span class="num">05</span><span class="bar"></span><span class="label">Cap. 01 · Visão</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner stmt-center">
       <div class="eyebrow reveal">⬢ Nossa visão</div>
@@ -1164,7 +1194,7 @@
     <div class="grid-bg dense"></div>
     <div class="blob r2"></div>
     <div class="slide-tag"><span class="num">06</span><span class="bar"></span><span class="label">Cap. 01 · Promessa</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner stmt-center">
       <div class="eyebrow reveal">◆ Nossa promessa</div>
@@ -1184,7 +1214,7 @@
   <div class="slide bg-blade">
     <div class="grid-bg" style="opacity:.4"></div>
     <div class="slide-tag"><span class="num" style="color:#fff">07</span><span class="bar" style="background:#fff"></span><span class="label" style="color:rgba(255,255,255,.7)">Cap. 02 · Cultura</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner stmt-center">
       <div class="eyebrow reveal" style="color:#fff;">O que nos define</div>
@@ -1203,7 +1233,7 @@
     <div class="grid-bg"></div>
     <div class="blob r1"></div>
     <div class="slide-tag"><span class="num">08</span><span class="bar"></span><span class="label">Cap. 02 · Pilar 01/06</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="pillar-stage">
@@ -1223,7 +1253,7 @@
     <div class="grid-bg dense"></div>
     <div class="blob r2"></div>
     <div class="slide-tag"><span class="num">09</span><span class="bar"></span><span class="label">Cap. 02 · Pilar 02/06</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="pillar-stage">
@@ -1243,7 +1273,7 @@
     <div class="grid-bg"></div>
     <div class="blob r1"></div>
     <div class="slide-tag"><span class="num">10</span><span class="bar"></span><span class="label">Cap. 02 · Pilar 03/06</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="pillar-stage">
@@ -1263,7 +1293,7 @@
     <div class="grid-bg dense"></div>
     <div class="blob r3"></div>
     <div class="slide-tag"><span class="num">11</span><span class="bar"></span><span class="label">Cap. 02 · Pilar 04/06</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="pillar-stage">
@@ -1283,7 +1313,7 @@
     <div class="grid-bg"></div>
     <div class="blob r2"></div>
     <div class="slide-tag"><span class="num">12</span><span class="bar"></span><span class="label">Cap. 02 · Pilar 05/06</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="pillar-stage">
@@ -1303,7 +1333,7 @@
     <div class="grid-bg dense"></div>
     <div class="blob r1"></div>
     <div class="slide-tag"><span class="num">13</span><span class="bar"></span><span class="label">Cap. 02 · Pilar 06/06</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="pillar-stage">
@@ -1322,7 +1352,7 @@
   <div class="slide bg-blade">
     <div class="grid-bg" style="opacity:.4"></div>
     <div class="slide-tag"><span class="num" style="color:#fff">14</span><span class="bar" style="background:#fff"></span><span class="label" style="color:rgba(255,255,255,.7)">Cap. 03 · Sua função</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner stmt-center">
       <div class="eyebrow reveal" style="color:#fff;">Seu cargo</div>
@@ -1341,7 +1371,7 @@
     <div class="grid-bg"></div>
     <div class="blob r1"></div>
     <div class="slide-tag"><span class="num">15</span><span class="bar"></span><span class="label">Cap. 03 · Importância estratégica</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner stmt-center">
       <div class="eyebrow reveal">Por que sua posição importa</div>
@@ -1359,7 +1389,7 @@
   <!-- ═══════════════ 17. RESPONSABILIDADES PT 1 ═══════════════ -->
   <div class="slide bg-noir">
     <div class="slide-tag"><span class="num">16</span><span class="bar"></span><span class="label">Cap. 03 · Responsabilidades 1/2</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="reveal" style="margin-bottom:32px;">
@@ -1394,7 +1424,7 @@
   <!-- ═══════════════ 18. RESPONSABILIDADES PT 2 ═══════════════ -->
   <div class="slide bg-coal">
     <div class="slide-tag"><span class="num">17</span><span class="bar"></span><span class="label">Cap. 03 · Responsabilidades 2/2</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="reveal" style="margin-bottom:32px;">
@@ -1421,7 +1451,7 @@
     <div class="grid-bg"></div>
     <div class="blob r2"></div>
     <div class="slide-tag"><span class="num">18</span><span class="bar"></span><span class="label">Cap. 04 · Jornada · Expediente</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="reveal" style="text-align:center;margin-bottom:32px;">
@@ -1449,7 +1479,7 @@
     <div class="grid-bg"></div>
     <div class="blob r2"></div>
     <div class="slide-tag"><span class="num">19</span><span class="bar"></span><span class="label">Cap. 04 · Registro de ponto</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="reveal" style="text-align:center;margin-bottom:22px;">
@@ -1507,7 +1537,7 @@
     <div class="grid-bg dense"></div>
     <div class="blob r1"></div>
     <div class="slide-tag"><span class="num">20</span><span class="bar"></span><span class="label">Cap. 04 · Horas extras</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner stmt-center">
       <div class="eyebrow reveal">Regra de ouro</div>
@@ -1527,7 +1557,7 @@
   <div class="slide bg-blade">
     <div class="grid-bg" style="opacity:.4"></div>
     <div class="slide-tag"><span class="num" style="color:#fff">21</span><span class="bar" style="background:#fff"></span><span class="label" style="color:rgba(255,255,255,.7)">Cap. 05 · Contrato</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner stmt-center">
       <div class="eyebrow reveal" style="color:#fff;">Contrato de experiência</div>
@@ -1553,7 +1583,7 @@
     <div class="grid-bg"></div>
     <div class="blob r3"></div>
     <div class="slide-tag"><span class="num">22</span><span class="bar"></span><span class="label">Cap. 05 · Efetivação</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner stmt-center">
       <div class="eyebrow reveal">Após o 90º dia</div>
@@ -1573,7 +1603,7 @@
     <div class="grid-bg"></div>
     <div class="blob r2"></div>
     <div class="slide-tag"><span class="num">23</span><span class="bar"></span><span class="label">Cap. 05 · Deveres</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="reveal" style="margin-bottom:28px;">
@@ -1595,7 +1625,7 @@
     <div class="grid-bg dense"></div>
     <div class="blob r1"></div>
     <div class="slide-tag"><span class="num">24</span><span class="bar"></span><span class="label">Cap. 05 · Proibições</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="reveal" style="margin-bottom:28px;">
@@ -1617,7 +1647,7 @@
     <div class="grid-bg"></div>
     <div class="blob r1"></div>
     <div class="slide-tag"><span class="num">25</span><span class="bar"></span><span class="label">Cap. 05 · Consequência legal</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner stmt-center">
       <div class="eyebrow reveal" style="color:#ff5252;">⚠ Atenção máxima</div>
@@ -1635,7 +1665,7 @@
   <div class="slide bg-blade">
     <div class="grid-bg" style="opacity:.4"></div>
     <div class="slide-tag"><span class="num" style="color:#fff">26</span><span class="bar" style="background:#fff"></span><span class="label" style="color:rgba(255,255,255,.7)">Cap. 06 · Salário</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner stmt-center">
       <div class="eyebrow reveal" style="color:#fff;">Seu salário</div>
@@ -1655,7 +1685,7 @@
     <div class="blob r1"></div>
     <div class="blob r2"></div>
     <div class="slide-tag"><span class="num">27</span><span class="bar"></span><span class="label">Cap. 06 · Como você recebe</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="reveal stmt-center" style="margin-bottom:36px;">
@@ -1688,7 +1718,7 @@
     <div class="grid-bg"></div>
     <div class="blob r3"></div>
     <div class="slide-tag"><span class="num">28</span><span class="bar"></span><span class="label">Cap. 06 · Benefícios</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner stmt-center">
       <div class="eyebrow reveal">Além do salário</div>
@@ -1705,7 +1735,7 @@
   <!-- ═══════════════ 31. BENEFÍCIOS IMEDIATOS ═══════════════ -->
   <div class="slide bg-noir">
     <div class="slide-tag"><span class="num">29</span><span class="bar"></span><span class="label">Cap. 06 · Imediato</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="reveal" style="margin-bottom:28px;display:flex;align-items:center;gap:14px;">
@@ -1740,7 +1770,7 @@
     <div class="grid-bg"></div>
     <div class="blob r2"></div>
     <div class="slide-tag"><span class="num">30</span><span class="bar"></span><span class="label">Cap. 06 · iFood Benefícios</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="reveal" style="text-align:center;margin-bottom:24px;">
@@ -1801,7 +1831,7 @@
     <div class="grid-bg"></div>
     <div class="blob r2"></div>
     <div class="slide-tag"><span class="num">31</span><span class="bar"></span><span class="label">Cap. 06 · Mobilidade · Bilhete Único</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="reveal" style="text-align:center;margin-bottom:20px;">
@@ -1852,7 +1882,7 @@
     <div class="grid-bg"></div>
     <div class="blob r1"></div>
     <div class="slide-tag"><span class="num">32</span><span class="bar"></span><span class="label">Cap. 06 · Pós-experiência</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="reveal" style="margin-bottom:28px;display:flex;align-items:center;gap:14px;">
@@ -1881,7 +1911,7 @@
   <!-- ═══════════════ 34. FERRAMENTAS ═══════════════ -->
   <div class="slide bg-coal">
     <div class="slide-tag"><span class="num">33</span><span class="bar"></span><span class="label">Cap. 07 · Ferramentas</span></div>
-    <div class="slide-logo"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"></div>
+    <a class="slide-logo" href="index.html" title="Voltar ao hub"><img src="https://wron.com.br/wp-content/uploads/2025/09/Logo-menu.png"><span class="hub-back">↩ Hub</span></a>
 
     <div class="inner">
       <div class="reveal stmt-center" style="margin-bottom:32px;">
